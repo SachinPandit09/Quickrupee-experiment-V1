@@ -7,7 +7,8 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px 16px 40px; }
-  .phone { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); overflow: hidden; }
+  .phone { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); overflow: hidden; transition: opacity 0.2s ease; }
+  .phone.fading { opacity: 0; }
   .status-bar { background: #1a1a2e; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; }
   .status-bar span { color: #fff; font-size: 12px; }
   .app-header { padding: 14px 16px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; }
@@ -133,9 +134,11 @@ function calcEMI(p,m){var r=0.24/12;return Math.round(p*r*Math.pow(1+r,m)/(Math.
 function fmt(n){return '₹'+n.toLocaleString('en-IN');}
 function updateLoan(){loanAmount=parseInt(document.getElementById('loanSlider').value);var e=calcEMI(loanAmount,tenure),t=e*tenure+500;document.getElementById('amountDisplay').textContent=fmt(loanAmount);document.getElementById('c-principal').textContent=fmt(loanAmount);document.getElementById('c-emi').textContent=fmt(e);document.getElementById('c-total').textContent=fmt(t);}
 function selectTenure(el,m){document.querySelectorAll('.tenure-opt').forEach(function(o){o.classList.remove('selected')});el.classList.add('selected');tenure=m;updateLoan();}
-function goToConfirm(){insurance=document.getElementById('insuranceCheck').checked;var e=calcEMI(loanAmount,tenure),t=e*tenure+500;document.getElementById('rev-amount').textContent=fmt(loanAmount);document.getElementById('rev-tenure').textContent=tenure+' months';document.getElementById('rev-emi').textContent=fmt(e);document.getElementById('rev-total').textContent=fmt(t);document.getElementById('rev-ins').textContent=insurance?'Yes — ₹150/month':'Not selected';document.getElementById('mainScreen').style.display='none';document.getElementById('confirmScreen').style.display='block';window.scrollTo(0,0);}
-function goBack(){document.getElementById('confirmScreen').style.display='none';document.getElementById('mainScreen').style.display='block';window.scrollTo(0,0);}
-function submitApplication(){document.getElementById('confirmScreen').style.display='none';document.getElementById('submittedScreen').style.display='block';window.scrollTo(0,0);}
+// Morph transition between screens
+function morphTo(hideId,showId){var phone=document.querySelector('.phone');phone.classList.add('fading');setTimeout(function(){document.getElementById(hideId).style.display='none';document.getElementById(showId).style.display='block';phone.classList.remove('fading');window.scrollTo(0,0);},200);}
+function goToConfirm(){insurance=document.getElementById('insuranceCheck').checked;var e=calcEMI(loanAmount,tenure),t=e*tenure+500;document.getElementById('rev-amount').textContent=fmt(loanAmount);document.getElementById('rev-tenure').textContent=tenure+' months';document.getElementById('rev-emi').textContent=fmt(e);document.getElementById('rev-total').textContent=fmt(t);document.getElementById('rev-ins').textContent=insurance?'Yes — ₹150/month':'Not selected';morphTo('mainScreen','confirmScreen');}
+function goBack(){morphTo('confirmScreen','mainScreen');}
+function submitApplication(){morphTo('confirmScreen','submittedScreen');}
 
 function submitRecall(){
   var confidence=document.getElementById('confidenceSlider').value,recallAPR=document.getElementById('recall-apr').value.trim(),recallFee=document.getElementById('recall-fee').value.trim(),fairness=document.getElementById('fairnessSlider').value,emi=calcEMI(loanAmount,tenure),total=emi*tenure+500;
