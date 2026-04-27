@@ -55,7 +55,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
 .error-msg{font-size:12px;color:var(--red);margin-top:6px;display:none}
 .q-card.error .error-msg{display:block}
 .step-info{text-align:center;font-size:12px;color:var(--muted);margin-bottom:16px}
-@media(max-width:500px){.container{padding:16px 10px 40px}.header-content{padding:20px 18px}.q-card{padding:18px 18px}.header-content h1{font-size:24px}}
+@media(max-width:500px){.container{padding:12px 8px 32px}.header-content{padding:20px 16px}.q-card{padding:18px 16px}.header-content h1{font-size:24px}.iframe-wrap{padding:0}.iframe-wrap iframe{max-width:100%;min-height:600px;border-radius:0}.scenario-card{padding:24px 16px}.btn-row{margin-top:14px}}
 </style>
 </head>
 <body>
@@ -381,8 +381,14 @@ function submitAll() {
     fl['fl' + (i+1) + 'Correct'] = correct;
   });
 
+  // Format timestamp in IST (Indian Standard Time)
+  var now = new Date();
+  var istOffset = 5.5 * 60 * 60 * 1000;
+  var ist = new Date(now.getTime() + istOffset);
+  var ts = ist.getUTCFullYear() + '-' + String(ist.getUTCMonth()+1).padStart(2,'0') + '-' + String(ist.getUTCDate()).padStart(2,'0') + ' ' + String(ist.getUTCHours()).padStart(2,'0') + ':' + String(ist.getUTCMinutes()).padStart(2,'0') + ':' + String(ist.getUTCSeconds()).padStart(2,'0') + ' IST';
+
   var payload = {
-    timestamp: new Date().toISOString(),
+    timestamp: ts,
     participantId: participantId,
     participantNumber: participantNumber || 0,
     condition: assignedCondition,
