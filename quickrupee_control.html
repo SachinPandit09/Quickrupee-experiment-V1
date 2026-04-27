@@ -71,7 +71,7 @@
   .loading.active { display: flex; }
   .spinner { width: 36px; height: 36px; border: 3px solid #eee; border-top-color: #1a1a2e; border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  @media(max-width:440px){body{padding:0;background:#fff;min-height:auto}.phone{border-radius:0;box-shadow:none;max-width:100%}}
+  @media(max-width:440px){body{padding:0;background:#fff;min-height:auto}.phone{border-radius:0;box-shadow:none;max-width:100%}.tenure-opt{padding:14px;font-size:14px;min-height:48px}.cta-btn,.submit-btn,.cancel-btn{padding:16px;font-size:16px;min-height:50px}.checkbox-row input[type=checkbox]{width:20px;height:20px}input[type=range]{height:8px}input[type=text]{padding:12px;font-size:14px}.section{padding:14px 14px}.cost-box,.insurance-box,.kfs-box{margin:12px 10px}}
 </style>
 </head>
 <body>
@@ -154,7 +154,10 @@ function submitRecall(){
   if(p.get('embedded')!=='true')return;
   function rh(){window.parent.postMessage({type:'quickrupee-resize',height:document.documentElement.scrollHeight},'*');}
   new MutationObserver(rh).observe(document.body,{childList:true,subtree:true,attributes:true});
-  window.addEventListener('load',rh);setInterval(rh,500);
+  window.addEventListener('load',rh);setInterval(rh,300);
+  // Sync scroll-to-top with parent page
+  var _st=window.scrollTo;
+  window.scrollTo=function(x,y){_st.call(window,x,y);if(x===0&&y===0){window.parent.postMessage({type:'quickrupee-scroll-top'},'*');setTimeout(rh,50);setTimeout(rh,200);}};
   window.submitRecall=function(){
     var c=document.getElementById('confidenceSlider').value,a=document.getElementById('recall-apr').value.trim(),f=document.getElementById('recall-fee').value.trim();
     if(!a||!f){alert('Please answer both recall questions before submitting.');return;}
