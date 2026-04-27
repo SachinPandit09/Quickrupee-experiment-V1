@@ -152,8 +152,16 @@ function submitRecall(){
   if(window.parent===window)return;
   var p=new URLSearchParams(window.location.search);
   if(p.get('embedded')!=='true')return;
-  function rh(){window.parent.postMessage({type:'quickrupee-resize',height:document.documentElement.scrollHeight},'*');}
-  new MutationObserver(rh).observe(document.body,{childList:true,subtree:true,attributes:true});
+  // Remove min-height so iframe shrinks to fit content
+  document.body.style.minHeight='auto';
+  document.body.style.overflow='hidden';
+  // Report actual .phone container height, not full document
+  function rh(){
+    var phone=document.querySelector('.phone');
+    var h=phone?phone.offsetHeight+20:document.documentElement.scrollHeight;
+    window.parent.postMessage({type:'quickrupee-resize',height:h},'*');
+  }
+  new MutationObserver(function(){rh();setTimeout(rh,50);setTimeout(rh,150);}).observe(document.body,{childList:true,subtree:true,attributes:true});
   window.addEventListener('load',rh);setInterval(rh,300);
   // Sync scroll-to-top with parent page
   var _st=window.scrollTo;
