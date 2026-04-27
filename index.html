@@ -55,7 +55,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);lin
 .error-msg{font-size:12px;color:var(--red);margin-top:6px;display:none}
 .q-card.error .error-msg{display:block}
 .step-info{text-align:center;font-size:12px;color:var(--muted);margin-bottom:16px}
-@media(max-width:500px){.container{padding:12px 8px 32px}.header-content{padding:20px 16px}.q-card{padding:18px 16px}.header-content h1{font-size:24px}.iframe-wrap{padding:0}.iframe-wrap iframe{max-width:100%;min-height:600px;border-radius:0}.scenario-card{padding:24px 16px}.btn-row{margin-top:14px}}
+@media(max-width:500px){.container{padding:12px 8px 32px}.header-content{padding:20px 16px}.q-card{padding:18px 16px}.header-content h1{font-size:24px}.iframe-wrap{padding:0}.iframe-wrap iframe{max-width:100%;min-height:600px;border-radius:0}.scenario-card{padding:24px 16px}.btn-row{margin-top:14px}.option{padding:10px 4px;gap:10px;font-size:15px}.option input[type=radio]{width:22px;height:22px}.btn{padding:12px 28px;font-size:15px;min-height:46px}.q-label{font-size:15px;margin-bottom:14px}}
 </style>
 </head>
 <body>
@@ -309,6 +309,9 @@ window.addEventListener('message', function(event) {
   if (!event.data || !event.data.type) return;
   if (event.data.type === 'quickrupee-resize') {
     document.getElementById('loanFrame').style.height = event.data.height + 'px';
+  }
+  if (event.data.type === 'quickrupee-scroll-top') {
+    document.getElementById('loanFrame').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   if (event.data.type === 'quickrupee-complete') {
     loanData = event.data.data;
