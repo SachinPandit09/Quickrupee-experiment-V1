@@ -187,8 +187,14 @@ function submitRecall(){
   if(window.parent===window)return;
   var p=new URLSearchParams(window.location.search);
   if(p.get('embedded')!=='true')return;
-  function rh(){window.parent.postMessage({type:'quickrupee-resize',height:document.documentElement.scrollHeight},'*');}
-  new MutationObserver(rh).observe(document.body,{childList:true,subtree:true,attributes:true});
+  document.body.style.minHeight='auto';
+  document.body.style.overflow='hidden';
+  function rh(){
+    var phone=document.querySelector('.phone');
+    var h=phone?phone.offsetHeight+20:document.documentElement.scrollHeight;
+    window.parent.postMessage({type:'quickrupee-resize',height:h},'*');
+  }
+  new MutationObserver(function(){rh();setTimeout(rh,50);setTimeout(rh,150);}).observe(document.body,{childList:true,subtree:true,attributes:true});
   window.addEventListener('load',rh);setInterval(rh,300);
   var _st=window.scrollTo;
   window.scrollTo=function(x,y){_st.call(window,x,y);if(x===0&&y===0){window.parent.postMessage({type:'quickrupee-scroll-top'},'*');setTimeout(rh,50);setTimeout(rh,200);}};
